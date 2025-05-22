@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   // --- Shopify access ---
   const shopifyDomain = "https://fujijapan.myshopify.com"; // 👈 замени на своё
-  const accessToken = "process.env.SHOPIFY_ACCESS_TOKEN"; // 👈 вставь Admin API Access Token
+  const accessToken = process.env.SHOPIFY_ACCESS_TOKEN; // 👈 вставь Admin API Access Token
 
   // --- Преобразуем данные из Bokun в Shopify заказ ---
   const orderData = {
