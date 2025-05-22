@@ -10,27 +10,22 @@ export default async function handler(req, res) {
   const accessToken = process.env.SHOPIFY_ACCESS_TOKEN; // 👈 вставь Admin API Access Token
 
   // --- Преобразуем данные из Bokun в Shopify заказ ---
-const orderData = {
-  order: {
-    line_items: [
-      {
-        title: `Experience: ${booking.confirmationCode}`,
-        price: booking.totalPrice / 100,
-        quantity: 1,
-      }
-    ],
-    email: booking.customerEmail || "guest@example.com",
-    financial_status: "pending",
-    currency: booking.currency || "JPY",
-    tags: "Bokun",
-    note: `Booking ID: ${booking.bookingId}`,
-    customer: {
-      first_name: booking.firstName || "",
-      last_name: booking.lastName || "",
-      email: booking.customerEmail || ""
+  const orderData = {
+    order: {
+      line_items: [
+        {
+          title: `Experience: ${booking.confirmationCode}`,
+          price: booking.totalPrice,
+          quantity: 1,
+        }
+      ],
+      email: booking.email,
+      financial_status: "pending",
+      currency: booking.currency || "JPY",
+      tags: "Bokun",
+      note: `Booking ID: ${booking.bookingId}`
     }
-  }
-};
+  };
 
   // --- Отправка в Shopify ---
   const response = await fetch(`${shopifyDomain}/admin/api/2023-10/orders.json`, {
