@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const booking = req.body;
 
   // --- Shopify access ---
-  const shopifyDomain = "https://fujijapan.myshopify.com"; // 👈 замени на своё
+  const shopifyDomain = "fujijapan.myshopify.com"; // 👈 замени на своё
   const accessToken = "process.env.SHOPIFY_ACCESS_TOKEN"; // 👈 вставь Admin API Access Token
 
   // --- Преобразуем данные из Bokun в Shopify заказ ---
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
   };
 
   // --- Отправка в Shopify ---
-  const response = await fetch(`https://${shopifyDomain}/admin/api/2023-10/orders.json`, {
+  const response = await fetch(`${shopifyDomain}/admin/api/2023-10/orders.json`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
