@@ -15,11 +15,11 @@ export default async function handler(req, res) {
       line_items: [
         {
           title: `Experience: ${booking.confirmationCode}`,
-          price: booking.totalPrice / 100,
+          price: booking.totalPrice,
           quantity: 1,
         }
       ],
-      email: "guest@example.com",
+      email: booking.email,
       financial_status: "pending",
       currency: booking.currency || "JPY",
       tags: "Bokun",
