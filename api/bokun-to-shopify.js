@@ -5,11 +5,28 @@ export default async function handler(req, res) {
 
   const booking = req.body;
 
-  // --- Shopify access ---
-  const shopifyDomain = "https://fujijapan.myshopify.com"; // 👈 замени на своё
-  const accessToken = process.env.SHOPIFY_ACCESS_TOKEN; // 👈 вставь Admin API Access Token
+  const shopifyDomain = "https://fujijapan.myshopify.com";
+  const accessToken = process.env.SHOPIFY_ACCESS_TOKEN;
 
-  // --- Преобразуем данные из Bokun в Shopify заказ ---
+  // --- Проверка: уже существует заказ с таким bookingId? ---
+  const existingOrdersRes = await fetch(`${shopifyDomain}/admin/api/2023-10/orders.json?status=any&fields=id,note`, {
+    headers: {
+      "X-Shopify-Access-Token": accessToken,
+      "Content-Type": "application/json",
+    }
+  });
+
+  const existingOrdersData = await existingOrdersRes.json();
+  const alreadyExists = existingOrdersData.orders.find(o =>
+    o.note && o.note.includes(`Booking ID: ${booking.bookingId}`)
+  );
+
+  if (alreadyExists) {
+    console.log(`⚠️ Заказ с Booking ID ${booking.bookingId} уже существует`);
+    return res.status(200).json({ message: "Order already exists, skipping." });
+  }
+
+  // --- Создание нового заказа ---
   const orderData = {
     order: {
       line_items: [
@@ -27,7 +44,6 @@ export default async function handler(req, res) {
     }
   };
 
-  // --- Отправка в Shopify ---
   const response = await fetch(`${shopifyDomain}/admin/api/2023-10/orders.json`, {
     method: "POST",
     headers: {
@@ -38,5 +54,5 @@ export default async function handler(req, res) {
   });
 
   const result = await response.json();
-  res.status(200).json({ message: "Sent to Shopify", shopifyResponse: result });
+  return res.status(200).json({ message: "Order sent to Shopify", shopifyResponse: result });
 }
