@@ -7,6 +7,7 @@ export default async function handler(req, res) {
 
   // Поддержка разных форматов входящих данных
   const bookingId = req.body?.bookingId || req.body?.booking?.id;
+  console.log("🔍 Поиск по note: Booking ID: ", bookingId);
 
   console.log("bookingId >>>", bookingId);
 
@@ -62,4 +63,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Server error', details: error.message });
   }
 }
-console.log("🔍 Поиск по note: Booking ID: ", bookingId);

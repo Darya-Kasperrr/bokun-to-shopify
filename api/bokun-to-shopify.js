@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   }
 
   const booking = req.body;
-
+  console.log("📦 Создание заказа. booking.bookingId:", booking.bookingId);     
   const shopifyDomain = "https://fujijapan.myshopify.com";
   const accessToken = process.env.SHOPIFY_ACCESS_TOKEN;
 
@@ -56,4 +56,3 @@ export default async function handler(req, res) {
   const result = await response.json();
   return res.status(200).json({ message: "Order sent to Shopify", shopifyResponse: result });
 }
-console.log("📦 Создание заказа. booking.bookingId:", booking.bookingId);
