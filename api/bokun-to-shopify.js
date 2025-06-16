@@ -4,11 +4,18 @@ export default async function handler(req, res) {
   }
 
   const booking = req.body;
-  console.log("📦 Создание заказа. booking.bookingId:", booking.bookingId);     
+  console.log("📦 Создание заказа. booking.bookingId:", booking.bookingId);
+
+  // Защита от пустого bookingId
+  if (!booking.bookingId) {
+    console.warn("❌ Booking ID отсутствует в запросе");
+    return res.status(400).json({ error: "Missing bookingId in payload" });
+  }
+
   const shopifyDomain = "https://fujijapan.myshopify.com";
   const accessToken = process.env.SHOPIFY_ACCESS_TOKEN;
 
-  // --- Проверка: уже существует заказ с таким bookingId? ---
+  // Проверка существования заказа
   const existingOrdersRes = await fetch(`${shopifyDomain}/admin/api/2023-10/orders.json?status=any&fields=id,note`, {
     headers: {
       "X-Shopify-Access-Token": accessToken,
@@ -26,7 +33,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ message: "Order already exists, skipping." });
   }
 
-  // --- Создание нового заказа ---
+  // Создание заказа
   const orderData = {
     order: {
       line_items: [
